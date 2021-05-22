@@ -294,14 +294,17 @@ void AppWindow::allocate()
     lspTimerJava->setInterval(SettingsHelper::getLSPDelayJava());
     lspTimerPython->setInterval(SettingsHelper::getLSPDelayPython());
 
-    trayIconMenu = new QMenu();
-    trayIconMenu->addAction(tr("Show Main Window"), this, &AppWindow::showOnTop);
-    trayIconMenu->addAction(tr("About"), this, &AppWindow::on_actionAbout_triggered);
-    trayIconMenu->addAction(tr("Quit"), this, &AppWindow::on_actionQuit_triggered);
-    trayIcon = new QSystemTrayIcon();
-    trayIcon->setIcon(QIcon(":/icon.png"));
-    trayIcon->setContextMenu(trayIconMenu);
-    trayIcon->show();
+    if (SettingsHelper::isShowTrayIcon())
+    {
+        trayIconMenu = new QMenu();
+        trayIconMenu->addAction(tr("Show Main Window"), this, &AppWindow::showOnTop);
+        trayIconMenu->addAction(tr("About"), this, &AppWindow::on_actionAbout_triggered);
+        trayIconMenu->addAction(tr("Quit"), this, &AppWindow::on_actionQuit_triggered);
+        trayIcon = new QSystemTrayIcon();
+        trayIcon->setIcon(QIcon(":/icon.png"));
+        trayIcon->setContextMenu(trayIconMenu);
+        trayIcon->show();
+    }
 
     sessionManager = new Core::SessionManager(this);
 }

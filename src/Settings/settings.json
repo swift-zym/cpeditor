@@ -1182,5 +1182,10 @@
     "type": "bool",
     "default": false,
     "notr": true
+  },
+  {
+    "name": "Show Tray Icon",
+    "type": "bool",
+    "default": true
   }
 ]

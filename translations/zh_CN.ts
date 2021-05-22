@@ -2619,6 +2619,10 @@ You can learn about it by running `yapf --style-help`.</source>
         <source>Automatically uncheck test cases when they get accepted.</source>
         <translation>在测试点通过测试时自动取消选中。</translation>
     </message>
+    <message>
+        <source>Show Tray Icon</source>
+        <translation>在任务栏托盘中显示图标</translation>
+    </message>
 </context>
 <context>
     <name>ShortcutItem</name>

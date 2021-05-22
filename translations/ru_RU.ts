@@ -2627,6 +2627,10 @@ You can learn about it by running `yapf --style-help`.</source>
         <source>Automatically uncheck test cases when they get accepted.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show Tray Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ShortcutItem</name>
