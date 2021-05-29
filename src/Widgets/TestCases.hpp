@@ -68,6 +68,7 @@ class TestCases : public QWidget
     QStringList customCheckers() const;
     QString checkerText() const;
     Core::Checker::CheckerType checkerType() const;
+    void setManageCheckerButtonsVisible(bool visible);
 
     void setChecked(int index, bool checked);
     bool isChecked(int index) const;
@@ -94,6 +95,7 @@ class TestCases : public QWidget
   private slots:
     void on_addButton_clicked();
     void on_addCheckerButton_clicked();
+    void on_deleteCheckerButton_clicked();
     void onChildDeleted(TestCase *widget);
 
   private:
@@ -106,7 +108,8 @@ class TestCases : public QWidget
     static const int MAX_NUMBER_OF_TESTCASES = 100;
     QVBoxLayout *mainLayout = nullptr, *scrollAreaLayout = nullptr;
     QHBoxLayout *titleLayout = nullptr, *checkerLayout = nullptr;
-    QPushButton *addButton = nullptr, *moreButton = nullptr, *addCheckerButton = nullptr;
+    QPushButton *addButton = nullptr, *moreButton = nullptr, *addCheckerButton = nullptr,
+                *updateCheckerButton = nullptr, *deleteCheckerButton = nullptr;
     QMenu *moreMenu = nullptr;
     QComboBox *checkerComboBox = nullptr;
     QScrollArea *scrollArea = nullptr;

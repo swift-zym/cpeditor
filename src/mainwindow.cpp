@@ -1243,9 +1243,15 @@ void MainWindow::updateChecker()
 {
     delete checker;
     if (testcases->checkerType() == Core::Checker::Custom)
+    {
         checker = new Core::Checker(testcases->checkerText(), log, this);
+        testcases->setManageCheckerButtonsVisible(true);
+    }
     else
+    {
         checker = new Core::Checker(testcases->checkerType(), log, this);
+        testcases->setManageCheckerButtonsVisible(false);
+    }
     connect(checker, &Core::Checker::checkFinished, testcases, &Widgets::TestCases::setVerdict);
     checker->prepare(SettingsManager::get(QString("C++/Compile Command")).toString());
 }

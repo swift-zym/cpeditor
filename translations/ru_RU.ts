@@ -3109,6 +3109,26 @@ You can learn about it by running `yapf --style-help`.</source>
         <extracomment>Here &quot;checked&quot; means the checkbox is checked</extracomment>
         <translation>Вы действительно хотите скопировать все отмеченные тест-кейсы в соответсвующие им ожидаемые?</translation>
     </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished">Добавить</translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation type="unfinished">Обновить</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Re-compile current checker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete current checker</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Widgets::UpdatePresenter</name>

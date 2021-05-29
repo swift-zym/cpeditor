@@ -3101,6 +3101,26 @@ You can learn about it by running `yapf --style-help`.</source>
         <extracomment>Here &quot;checked&quot; means the checkbox is checked</extracomment>
         <translation>你确定要将所有选中的输出复制到与之对应的答案吗？</translation>
     </message>
+    <message>
+        <source>Add</source>
+        <translation>添加</translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation>更新</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <source>Re-compile current checker</source>
+        <translation>重新编译目前选中的评测器</translation>
+    </message>
+    <message>
+        <source>Delete current checker</source>
+        <translation>删除目前选中的评测器</translation>
+    </message>
 </context>
 <context>
     <name>Widgets::UpdatePresenter</name>

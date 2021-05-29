@@ -50,7 +50,9 @@ TestCases::TestCases(MessageLogger *logger, QWidget *parent) : QWidget(parent), 
     checkerLabel = new QLabel(tr("Checker:"));
     addButton = new QPushButton(tr("Add Test"));
     moreButton = new QPushButton(tr("More"));
-    addCheckerButton = new QPushButton(tr("Add Checker"));
+    addCheckerButton = new QPushButton(tr("Add"));
+    updateCheckerButton = new QPushButton(tr("Update"));
+    deleteCheckerButton = new QPushButton(tr("Delete"));
     checkerComboBox = new QComboBox();
     scrollArea = new QScrollArea();
     scrollAreaWidget = new QWidget();
@@ -63,6 +65,8 @@ TestCases::TestCases(MessageLogger *logger, QWidget *parent) : QWidget(parent), 
     checkerLayout->addWidget(checkerLabel);
     checkerLayout->addWidget(checkerComboBox);
     checkerLayout->addWidget(addCheckerButton);
+    checkerLayout->addWidget(updateCheckerButton);
+    checkerLayout->addWidget(deleteCheckerButton);
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(scrollAreaWidget);
     mainLayout->addLayout(titleLayout);
@@ -71,6 +75,8 @@ TestCases::TestCases(MessageLogger *logger, QWidget *parent) : QWidget(parent), 
 
     verdicts->setToolTip(tr("Unaccepted / Accepted / Total"));
     addCheckerButton->setToolTip(tr("Add a custom testlib checker"));
+    updateCheckerButton->setToolTip(tr("Re-compile current checker"));
+    deleteCheckerButton->setToolTip(tr("Delete current checker"));
 
     updateVerdicts();
 
@@ -251,6 +257,8 @@ TestCases::TestCases(MessageLogger *logger, QWidget *parent) : QWidget(parent), 
     checkerLabel->setSizePolicy({QSizePolicy::Maximum, QSizePolicy::Fixed});
     checkerComboBox->setSizePolicy({QSizePolicy::Expanding, QSizePolicy::Fixed});
     addCheckerButton->setSizePolicy({QSizePolicy::Maximum, QSizePolicy::Fixed});
+    updateCheckerButton->setSizePolicy({QSizePolicy::Maximum, QSizePolicy::Fixed});
+    deleteCheckerButton->setSizePolicy({QSizePolicy::Maximum, QSizePolicy::Fixed});
     checkerComboBox->setMinimumWidth(100);
 
     checkerComboBox->addItems({tr("Ignore trailing spaces"), tr("Strictly the same"), tr("ncmp - Compare int64s"),
@@ -263,6 +271,8 @@ TestCases::TestCases(MessageLogger *logger, QWidget *parent) : QWidget(parent), 
     connect(checkerComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &TestCases::checkerChanged);
     connect(addButton, &QPushButton::clicked, this, &TestCases::on_addButton_clicked);
     connect(addCheckerButton, &QPushButton::clicked, this, &TestCases::on_addCheckerButton_clicked);
+    connect(deleteCheckerButton, &QPushButton::clicked, this, &TestCases::on_deleteCheckerButton_clicked);
+    connect(updateCheckerButton, &QPushButton::clicked, this, &TestCases::checkerChanged);
 }
 
 void TestCases::setInput(int index, const QString &input)
@@ -505,6 +515,12 @@ Core::Checker::CheckerType TestCases::checkerType() const
     }
 }
 
+void TestCases::setManageCheckerButtonsVisible(bool visible)
+{
+    updateCheckerButton->setVisible(visible);
+    deleteCheckerButton->setVisible(visible);
+}
+
 void TestCases::setChecked(int index, bool checked)
 {
     if (VALIDATE_INDEX(index))
@@ -542,6 +558,13 @@ void TestCases::on_addCheckerButton_clicked()
         checkerComboBox->addItem(path);
         checkerComboBox->setCurrentIndex(checkerComboBox->count() - 1);
     }
+}
+
+void TestCases::on_deleteCheckerButton_clicked()
+{
+    LOG_INFO("Delete checker button clicked");
+    checkerComboBox->removeItem(checkerComboBox->currentIndex());
+    checkerComboBox->setCurrentIndex(0);
 }
 
 void TestCases::onChildDeleted(TestCase *widget)
