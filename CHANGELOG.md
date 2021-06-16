@@ -3,6 +3,7 @@
 ### Fixed
 
 -   Fix that two dialogs are shown when entering full-screen mode for the first time. (#875)
+-   Change the swap-line shortcuts on macOS from `Ctrl+Shift+Up/Down` to `Command+Ctrl+Up/Down` to fix that the old shortcuts were unusable on macOS. (#863 and #876)
 
 ## v6.9
 
