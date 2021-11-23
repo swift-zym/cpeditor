@@ -268,7 +268,7 @@ jobs:
         with:
           draft: true
           prerelease: ${{ steps.get_version.outputs.ISBETA }}
-          files: build/cpeditor-${{ steps.get_version.outputs.VERSION }}-macos-x64.dmg
+          files: build/dmg/cpeditor-${{ steps.get_version.outputs.VERSION }}-macos-x64.dmg
           name: CP Editor ${{ steps.get_version.outputs.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
