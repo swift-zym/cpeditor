@@ -258,7 +258,7 @@ jobs:
           cp ../dist/mac/cpeditor.icns cpeditor.app/Contents/Resources
           hdiutil create -volname cpeditor-${{ steps.get_version.outputs.VERSION }}-x64 -srcfolder cpeditor.app -ov -format UDZO cpeditor-${{ steps.get_version.outputs.VERSION }}-macos-x64.dmg
           hdiutil attach cpeditor-${{ steps.get_version.outputs.VERSION }}-macos-x64.dmg
-          cd /Volumes/cpeditor-${{ steps.get_version.outputs.VERSION }}-macos-x64
+          cd /Volumes/cpeditor-${{ steps.get_version.outputs.VERSION }}-x64
           ln -s /Applications Applications
 
       - name: "[macOS] Release"
