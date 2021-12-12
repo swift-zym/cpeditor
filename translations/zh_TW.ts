@@ -2952,6 +2952,21 @@ This may reduce distractions caused by stopwatch updates.</source>
     </message>
 </context>
 <context>
+    <name>Widgets::StressTesting</name>
+    <message>
+        <source>Stress Testing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generator Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard Program Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Widgets::TestCase</name>
     <message>
         <source>Input</source>

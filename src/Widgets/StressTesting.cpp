@@ -31,22 +31,22 @@ StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(
 {
 
     auto *widget = new QWidget(this);
-    auto *layout = new QHBoxLayout();
+    auto *layout = new QVBoxLayout();
     widget->setLayout(layout);
     setCentralWidget(widget);
     setWindowTitle(tr("Stress Testing"));
     resize(720, 480);
 
-    auto *generatorLayout = new QVBoxLayout();
-    generatorLable = new QLabel(tr("Generator Path"), widget);
+    auto *generatorLayout = new QHBoxLayout();
+    generatorLable = new QLabel(tr("Generator Path:"), widget);
     generatorLayout->addWidget(generatorLable);
     generatorPath = new PathItem(PathItem::AnyFile, widget);
     generatorLayout->addWidget(generatorPath);
 
     layout->addLayout(generatorLayout);
 
-    auto *stdLayout = new QVBoxLayout();
-    stdLabel = new QLabel(tr("Standard Program Path"), widget);
+    auto *stdLayout = new QHBoxLayout();
+    stdLabel = new QLabel(tr("Standard Program Path:"), widget);
     stdLayout->addWidget(stdLabel);
     stdPath = new PathItem(PathItem::AnyFile, widget);
     stdLayout->addWidget(stdPath);
