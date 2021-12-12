@@ -51,6 +51,7 @@ namespace Widgets
 {
 class TestCases;
 class Stopwatch;
+class StressTesting;
 } // namespace Widgets
 
 class MainWindow : public QMainWindow
@@ -137,6 +138,8 @@ class MainWindow : public QMainWindow
      * @brief ask the user for the new time limit for this tab
      */
     void updateTimeLimit();
+
+    void showStressTesting();
 
   private slots:
     void onCompilationStarted();
@@ -226,6 +229,7 @@ class MainWindow : public QMainWindow
 
     Widgets::TestCases *testcases = nullptr;
     Widgets::Stopwatch *stopwatch = nullptr;
+    Widgets::StressTesting *stressTesting = nullptr;
 
     QTimer *autoSaveTimer = nullptr;
 
