@@ -80,9 +80,8 @@ StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(
 
 void StressTesting::start()
 {
-    LOG_INFO("starting stress testing...");
     stop();
-    QString pattern = argumentsPatternLabel->text();
+    QString pattern = argumentsPattern->text();
     QString realArgumentsString = "";
     QVector<QPair<unsigned long long, unsigned long long>> argumentsRange;
     int argumentsCount = 0;

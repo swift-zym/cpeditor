@@ -475,6 +475,10 @@ git 提交编号: %3
         <source>Press F11 key to exit full-screen mode.</source>
         <translation>按下 F11 以退出全屏模式。</translation>
     </message>
+    <message>
+        <source>Stress Testing</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CodeSnippetsPage</name>

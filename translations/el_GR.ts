@@ -475,6 +475,10 @@ Build time: %4
         <source>Press F11 key to exit full-screen mode.</source>
         <translation>Πατήστε το F11 κουμπί για να βγείτε από πλήρες οθόνη.</translation>
     </message>
+    <message>
+        <source>Stress Testing</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CodeSnippetsPage</name>

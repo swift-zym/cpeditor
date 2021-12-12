@@ -475,6 +475,10 @@ Git commit hash: %3
         <source>Press F11 key to exit full-screen mode.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Stress Testing</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CodeSnippetsPage</name>

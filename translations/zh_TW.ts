@@ -479,6 +479,10 @@ Git commit hash：%3
         <source>&amp;Help</source>
         <translation>說明(&amp;H)</translation>
     </message>
+    <message>
+        <source>Stress Testing</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CodeSnippetsPage</name>
