@@ -68,15 +68,14 @@ StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(
 
     auto *controlLayout = new QHBoxLayout();
     startButton = new QPushButton(tr("Start"));
+    connect(startButton, &QPushButton::click, this, &StressTesting::start);
     controlLayout->addWidget(startButton);
     stopButton = new QPushButton(tr("Stop"));
+    connect(stopButton, &QPushButton::click, this, &StressTesting::stop);
     stopButton->setDisabled(true);
     controlLayout->addWidget(stopButton);
 
     layout->addLayout(controlLayout);
-
-    connect(startButton, &QPushButton::click, this, &StressTesting::start);
-    connect(stopButton, &QPushButton::click, this, &StressTesting::stop);
 }
 
 void StressTesting::start()

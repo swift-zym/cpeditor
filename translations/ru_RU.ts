@@ -2937,11 +2937,31 @@ This may reduce distractions caused by stopwatch updates.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Generator Path</source>
+        <source>Generator Path:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Standard Program Path</source>
+        <source>Generator Arguments Pattern:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Example: &quot;10 [5..100] abacaba&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard Program Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid arguments pattern</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
