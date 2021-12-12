@@ -1291,7 +1291,7 @@ void AppWindow::on_actionUseSnippets_triggered()
     }
 }
 
-void AppWindow::on_actionStressTesting_on_actionUseSnippets_triggered()
+void AppWindow::on_actionStressTesting_triggered()
 {
     if (currentWindow() != nullptr)
     {
