@@ -87,6 +87,7 @@ class MainWindow : public QMainWindow
     QString getProblemURL() const;
     QString getCompleteTitle() const;
     QString getTabTitle(bool complete, bool star, int removeLength = 0);
+    QString compileCommand() const;
     QCodeEditor *getEditor() const;
     bool isUntitled() const;
 
@@ -250,7 +251,6 @@ class MainWindow : public QMainWindow
     bool saveFile(SaveMode mode, const QString &head, bool safe);
     void performCompileAndRunDiagonistics();
     static QString getRunnerHead(int index);
-    QString compileCommand() const;
     int timeLimit() const;
     void updateCompileAndRunButtons() const;
     void setStopwatch();

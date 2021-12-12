@@ -17,22 +17,29 @@
 
 #include "Widgets/StressTesting.hpp"
 #include "Core/Checker.hpp"
+#include "Core/Compiler.hpp"
 #include "Core/EventLogger.hpp"
 #include "Core/MessageLogger.hpp"
+#include "Core/Runner.hpp"
 #include "Settings/PathItem.hpp"
+#include "Util/FileUtil.hpp"
+#include "generated/SettingsHelper.hpp"
 #include "mainwindow.hpp"
 #include <QCodeEditor>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QTemporaryDir>
 #include <QVBoxLayout>
 #include <functional>
 
 namespace Widgets
 {
-StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent))
+StressTesting::StressTesting(QWidget *parent)
+    : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent)), compiledCount(0)
 {
+    logger = mainWindow->getLogger();
 
     auto *widget = new QWidget(this);
     auto *layout = new QVBoxLayout();
@@ -139,29 +146,165 @@ void StressTesting::start()
 
     if (!ok)
     {
-        mainWindow->getLogger()->error(tr("Stress Testing"), tr("Invalid arguments pattern"));
+        logger->error(tr("Stress Testing"), tr("Invalid arguments pattern"));
         return;
     }
-    std::function<void(QString, int)> buildArguments = [&](const QString &current, int index) {
+    std::function<void(QString, int)> add = [&](const QString &current, int index) {
         if (index == argumentsRange.length())
         {
             LOG_INFO(INFO_OF(current));
-            tasks.append(current);
+            tests.append(current);
             return;
         }
         for (unsigned long long i = argumentsRange[index].first; i <= argumentsRange[index].second; i++)
         {
-            buildArguments(current.arg(QString::number(i)), index + 1);
+            add(current.arg(QString::number(i)), index + 1);
         }
     };
-    buildArguments(realArgumentsString, 0);
+    add(realArgumentsString, 0);
+
+    QString generatorCode = Util::readFile(generatorPath->getLineEdit()->text(), tr("Read Generator"), logger);
+    QString userCode = mainWindow->getEditor()->toPlainText();
+    QString stdCode = Util::readFile(stdPath->getLineEdit()->text(), tr("Read Standard Program"), logger);
+
+    if (generatorCode.isNull())
+    {
+        logger->error(tr("Stress Testing"), tr("Failed to open generator"));
+        return;
+    }
+
+    if (stdCode.isNull())
+    {
+        logger->error(tr("Stress Testing"), tr("Failed to open standard program"));
+        return;
+    }
+
+    tmpDir = new QTemporaryDir();
+
+    if (!tmpDir->isValid())
+    {
+        logger->error(tr("Stress Testing"), tr("Failed to create temporary directory"));
+        return;
+    }
+
+    generatorTmpPath = tmpDir->filePath("gen.cpp");
+    userTmpPath = tmpDir->filePath("user.cpp");
+    stdTmpPath = tmpDir->filePath("std.cpp");
+
+    if (!Util::saveFile(generatorTmpPath, generatorCode, tr("Stress Testing"), false, logger))
+        return;
+    if (!Util::saveFile(userTmpPath, userCode, tr("Stress Testing"), false, logger))
+        return;
+    if (!Util::saveFile(stdTmpPath, stdCode, tr("Stress Testing"), false, logger))
+        return;
+
+    auto testlib_h = Util::readFile(":/testlib/testlib.h", tr("Read testlib.h"), logger);
+    if (testlib_h.isNull())
+        return;
+    if (!Util::saveFile(tmpDir->filePath("testlib.h"), testlib_h, tr("Save testlib.h"), false, logger))
+        return;
+
+    compiledCount = 0;
+
+    generatorCompiler = new Core::Compiler();
+
+    connect(generatorCompiler, &Core::Compiler::compilationStarted, this,
+            &StressTesting::onGeneratorCompilationStarted);
+    connect(generatorCompiler, &Core::Compiler::compilationFinished, this,
+            &StressTesting::onGeneratorCompilationFinished);
+    connect(generatorCompiler, &Core::Compiler::compilationErrorOccurred, this,
+            &StressTesting::onCompilationErrorOccurred);
+    connect(generatorCompiler, &Core::Compiler::compilationFailed, this, &StressTesting::onCompilationFailed);
+    connect(generatorCompiler, &Core::Compiler::compilationKilled, this, &StressTesting::onCompilationKilled);
+    generatorCompiler->start(generatorTmpPath, "", SettingsHelper::getCppCompileCommand(), "C++");
+
+    userCompiler = new Core::Compiler();
+
+    connect(userCompiler, &Core::Compiler::compilationStarted, this, &StressTesting::onUserCompilationStarted);
+    connect(userCompiler, &Core::Compiler::compilationFinished, this, &StressTesting::onUserCompilationFinished);
+    connect(userCompiler, &Core::Compiler::compilationErrorOccurred, this, &StressTesting::onCompilationErrorOccurred);
+    connect(userCompiler, &Core::Compiler::compilationFailed, this, &StressTesting::onCompilationFailed);
+    connect(userCompiler, &Core::Compiler::compilationKilled, this, &StressTesting::onCompilationKilled);
+    userCompiler->start(userTmpPath, "", mainWindow->compileCommand(), mainWindow->getLanguage());
+
+    stdCompiler = new Core::Compiler();
+
+    connect(stdCompiler, &Core::Compiler::compilationStarted, this, &StressTesting::onStdCompilationStarted);
+    connect(stdCompiler, &Core::Compiler::compilationFinished, this, &StressTesting::onStdCompilationFinished);
+    connect(stdCompiler, &Core::Compiler::compilationErrorOccurred, this, &StressTesting::onCompilationErrorOccurred);
+    connect(stdCompiler, &Core::Compiler::compilationFailed, this, &StressTesting::onCompilationFailed);
+    connect(stdCompiler, &Core::Compiler::compilationKilled, this, &StressTesting::onCompilationKilled);
+    stdCompiler->start(stdTmpPath, "", mainWindow->compileCommand(), mainWindow->getLanguage());
+}
+
+void StressTesting::onGeneratorCompilationStarted()
+{
+    logger->info(tr("Compiler"), tr("Generator compilation has started"));
+}
+
+void StressTesting::onGeneratorCompilationFinished()
+{
+    logger->info(tr("Compiler"), tr("Generator compilation has finished"));
+    compiledCount++;
+    if (compiledCount == 3)
+    {
+        nextTest();
+    }
+}
+
+void StressTesting::onUserCompilationStarted()
+{
+    logger->info(tr("Compiler"), tr("User program compilation has started"));
+}
+
+void StressTesting::onUserCompilationFinished()
+{
+    logger->info(tr("Compiler"), tr("User program compilation has finished"));
+    compiledCount++;
+    if (compiledCount == 3)
+    {
+        nextTest();
+    }
+}
+
+void StressTesting::onStdCompilationStarted()
+{
+    logger->info(tr("Compiler"), tr("Standard program compilation has started"));
+}
+
+void StressTesting::onStdCompilationFinished()
+{
+    logger->info(tr("Compiler"), tr("Standard program compilation has finished"));
+    compiledCount++;
+    if (compiledCount == 3)
+    {
+        nextTest();
+    }
 }
 
 void StressTesting::stop()
 {
-    tasks.clear();
+    delete runner;
+    delete generatorCompiler;
+    delete userCompiler;
+    delete stdCompiler;
+
+    tests.clear();
     startButton->setDisabled(false);
     stopButton->setDisabled(true);
+}
+
+void StressTesting::nextTest()
+{
+    if (tests.empty())
+    {
+        stop();
+        logger->info(tr("Stress Testing"), tr("All tests finished, no countertest found"));
+        return;
+    }
+    QString arguments = tests.front();
+    tests.pop_front();
+    logger->info(tr("Stress Testing"), tr("Running test with arguments \"%1\"").arg(arguments));
 }
 
 } // namespace Widgets

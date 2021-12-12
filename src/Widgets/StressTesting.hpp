@@ -25,6 +25,14 @@ class QLabel;
 class MainWindow;
 class QLineEdit;
 class QPushButton;
+class MessageLogger;
+class QTemporaryDir;
+
+namespace Core
+{
+class Runner;
+class Compiler;
+} // namespace Core
 
 namespace Widgets
 {
@@ -41,11 +49,31 @@ class StressTesting : public QMainWindow
     QLabel *generatorLable = nullptr, *stdLabel = nullptr, *argumentsPatternLabel = nullptr;
     QLineEdit *argumentsPattern = nullptr;
     QPushButton *startButton = nullptr, *stopButton = nullptr;
-    QVector<QString> tasks;
+    QVector<QString> tests;
+    Core::Runner *runner = nullptr;
+    Core::Compiler *generatorCompiler = nullptr;
+    Core::Compiler *userCompiler = nullptr;
+    Core::Compiler *stdCompiler = nullptr;
+    MessageLogger *logger = nullptr;
+    QTemporaryDir *tmpDir = nullptr;
+    QString generatorTmpPath;
+    QString userTmpPath;
+    QString stdTmpPath;
+    int compiledCount;
 
-  public slots:
+  private slots:
     void start();
     void stop();
+    void nextTest();
+    void onCompilationErrorOccurred(const QString &error);
+    void onCompilationFailed(const QString &reason);
+    void onCompilationKilled();
+    void onGeneratorCompilationStarted();
+    void onGeneratorCompilationFinished();
+    void onStdCompilationStarted();
+    void onStdCompilationFinished();
+    void onUserCompilationStarted();
+    void onUserCompilationFinished();
 };
 } // namespace Widgets
 
