@@ -82,6 +82,10 @@ MainWindow::MainWindow(int index, AppWindow *parent)
     QTimer::singleShot(0, [this] { setLanguage(language); }); // See issue #187 for more information
 
     stressTesting = new Widgets::StressTesting(this);
+    connect(stressTesting, &Widgets::StressTesting::compilationErrorOccurred, this,
+            &MainWindow::onCompilationErrorOccurred);
+    connect(stressTesting, &Widgets::StressTesting::compilationKilled, this, &MainWindow::onCompilationKilled);
+    connect(stressTesting, &Widgets::StressTesting::compilationFailed, this, &MainWindow::onCompilationFailed);
 }
 
 MainWindow::MainWindow(const QString &fileOpen, int index, AppWindow *parent) : MainWindow(index, parent)

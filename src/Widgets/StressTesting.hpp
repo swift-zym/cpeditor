@@ -61,6 +61,11 @@ class StressTesting : public QMainWindow
     QString stdTmpPath;
     int compiledCount;
 
+  signals:
+    void compilationErrorOccurred(const QString &error);
+    void compilationFailed(const QString &reason);
+    void compilationKilled();
+
   private slots:
     void start();
     void stop();

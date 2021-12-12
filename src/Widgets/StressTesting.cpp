@@ -307,4 +307,19 @@ void StressTesting::nextTest()
     logger->info(tr("Stress Testing"), tr("Running test with arguments \"%1\"").arg(arguments));
 }
 
+void StressTesting::onCompilationErrorOccurred(const QString &error)
+{
+    emit compilationErrorOccurred(error);
+}
+
+void StressTesting::onCompilationFailed(const QString &reason)
+{
+    emit compilationFailed(reason);
+}
+
+void StressTesting::onCompilationKilled()
+{
+    emit compilationKilled();
+}
+
 } // namespace Widgets
