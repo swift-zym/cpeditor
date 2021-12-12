@@ -23,6 +23,8 @@
 #include <QCodeEditor>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QVBoxLayout>
 
 namespace Widgets
@@ -35,7 +37,7 @@ StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(
     widget->setLayout(layout);
     setCentralWidget(widget);
     setWindowTitle(tr("Stress Testing"));
-    resize(720, 480);
+    resize(400, 360);
 
     auto *generatorLayout = new QHBoxLayout();
     generatorLable = new QLabel(tr("Generator Path:"), widget);
@@ -45,6 +47,15 @@ StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(
 
     layout->addLayout(generatorLayout);
 
+    auto *argumentsPatternLayout = new QHBoxLayout();
+    argumentsPatternLabel = new QLabel(tr("Generator Arguments Pattern:"));
+    argumentsPatternLayout->addWidget(argumentsPatternLabel);
+    argumentsPattern = new QLineEdit(widget);
+    argumentsPattern->setPlaceholderText(tr("Example: \"g 10 [5..100] abacaba\""));
+    argumentsPatternLayout->addWidget(argumentsPattern);
+
+    layout->addLayout(argumentsPatternLayout);
+
     auto *stdLayout = new QHBoxLayout();
     stdLabel = new QLabel(tr("Standard Program Path:"), widget);
     stdLayout->addWidget(stdLabel);
@@ -52,5 +63,14 @@ StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(
     stdLayout->addWidget(stdPath);
 
     layout->addLayout(stdLayout);
+
+    auto *controlLayout = new QHBoxLayout();
+    startButton = new QPushButton(tr("Start"));
+    controlLayout->addWidget(startButton);
+    stopButton = new QPushButton(tr("Stop"));
+    stopButton->setDisabled(true);
+    controlLayout->addWidget(stopButton);
+
+    layout->addLayout(controlLayout);
 }
 } // namespace Widgets

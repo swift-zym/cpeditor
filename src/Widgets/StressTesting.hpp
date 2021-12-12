@@ -23,6 +23,8 @@
 class PathItem;
 class QLabel;
 class MainWindow;
+class QLineEdit;
+class QPushButton;
 
 namespace Widgets
 {
@@ -35,8 +37,10 @@ class StressTesting : public QMainWindow
 
   private:
     MainWindow *mainWindow;
-    PathItem *generatorPath, *stdPath;
-    QLabel *generatorLable, *stdLabel;
+    PathItem *generatorPath = nullptr, *stdPath = nullptr;
+    QLabel *generatorLable = nullptr, *stdLabel = nullptr, *argumentsPatternLabel = nullptr;
+    QLineEdit *argumentsPattern = nullptr;
+    QPushButton *startButton = nullptr, *stopButton = nullptr;
 };
 } // namespace Widgets
 
