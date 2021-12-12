@@ -81,6 +81,7 @@ StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(
 
 void StressTesting::start()
 {
+    LOG_INFO("starting stress testing...");
     stop();
     QString pattern = argumentsPatternLabel->text();
     QString realArgumentsString = "";
