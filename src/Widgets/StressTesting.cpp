@@ -284,7 +284,9 @@ void StressTesting::onStdCompilationFinished()
 
 void StressTesting::stop()
 {
-    delete runner;
+    delete generatorRunner;
+    delete userRunner;
+    delete stdRunner;
     delete generatorCompiler;
     delete userCompiler;
     delete stdCompiler;
@@ -304,22 +306,35 @@ void StressTesting::nextTest()
     }
     QString arguments = tests.front();
     tests.pop_front();
-    logger->info(tr("Stress Testing"), tr("Running test with arguments \"%1\"").arg(arguments));
+    logger->info(tr("Stress Testing"), tr("Running with arguments \"%1\"").arg(arguments));
+
+    generatorRunner = new Core::Runner(-1);
+    connect(generatorRunner, &Core::Runner::runFinished, this, &StressTesting::onGeneratorRunFinished);
+    connect(generatorRunner, &Core::Runner::runOutputLimitExceeded, this,
+            &StressTesting::onGeneratorRunOutputLimitExceeded);
+    connect(generatorRunner, &Core::Runner::runKilled, this, &StressTesting::onGeneratorRunKilled);
+    generatorRunner->run(generatorTmpPath, "", "C++", "", arguments, "", SettingsHelper::getDefaultTimeLimit());
 }
 
 void StressTesting::onCompilationErrorOccurred(const QString &error)
 {
+    stop();
     emit compilationErrorOccurred(error);
 }
 
 void StressTesting::onCompilationFailed(const QString &reason)
 {
+    stop();
     emit compilationFailed(reason);
 }
 
 void StressTesting::onCompilationKilled()
 {
+    stop();
     emit compilationKilled();
 }
 
+void StressTesting::onGeneratorRunFinished()
+{
+}
 } // namespace Widgets

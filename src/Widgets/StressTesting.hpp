@@ -50,7 +50,9 @@ class StressTesting : public QMainWindow
     QLineEdit *argumentsPattern = nullptr;
     QPushButton *startButton = nullptr, *stopButton = nullptr;
     QVector<QString> tests;
-    Core::Runner *runner = nullptr;
+    Core::Runner *generatorRunner = nullptr;
+    Core::Runner *userRunner = nullptr;
+    Core::Runner *stdRunner = nullptr;
     Core::Compiler *generatorCompiler = nullptr;
     Core::Compiler *userCompiler = nullptr;
     Core::Compiler *stdCompiler = nullptr;
@@ -79,6 +81,9 @@ class StressTesting : public QMainWindow
     void onStdCompilationFinished();
     void onUserCompilationStarted();
     void onUserCompilationFinished();
+    void onGeneratorRunFinished();
+    void onGeneratorRunOutputLimitExceeded();
+    void onGeneratorRunKilled();
 };
 } // namespace Widgets
 
