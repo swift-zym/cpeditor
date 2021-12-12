@@ -41,6 +41,11 @@ class StressTesting : public QMainWindow
     QLabel *generatorLable = nullptr, *stdLabel = nullptr, *argumentsPatternLabel = nullptr;
     QLineEdit *argumentsPattern = nullptr;
     QPushButton *startButton = nullptr, *stopButton = nullptr;
+    QVector<QString> tasks;
+
+  public slots:
+    void start();
+    void stop();
 };
 } // namespace Widgets
 
