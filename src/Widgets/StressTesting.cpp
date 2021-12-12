@@ -337,4 +337,12 @@ void StressTesting::onCompilationKilled()
 void StressTesting::onGeneratorRunFinished()
 {
 }
+
+void StressTesting::onGeneratorRunKilled()
+{
+}
+
+void StressTesting::onGeneratorRunOutputLimitExceeded()
+{
+}
 } // namespace Widgets
