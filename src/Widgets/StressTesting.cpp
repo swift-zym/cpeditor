@@ -18,13 +18,39 @@
 #include "Widgets/StressTesting.hpp"
 #include "Core/Checker.hpp"
 #include "Core/MessageLogger.hpp"
+#include "Settings/PathItem.hpp"
+#include "mainwindow.hpp"
 #include <QCodeEditor>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QVBoxLayout>
 
 namespace Widgets
 {
-StressTesting::StressTesting(MessageLogger *logger, QCodeEditor *editor, Core::Checker *Checker, const QString &lang,
-                             QWidget *parent = nullptr)
-    : QMainWindow(parent)
+StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent))
 {
+
+    auto *widget = new QWidget(this);
+    auto *layout = new QHBoxLayout();
+    widget->setLayout(layout);
+    setCentralWidget(widget);
+    setWindowTitle(tr("Stress Testing"));
+    resize(720, 480);
+
+    auto *generatorLayout = new QVBoxLayout();
+    generatorLable = new QLabel(tr("Generator Path"), widget);
+    generatorLayout->addWidget(generatorLable);
+    generatorPath = new PathItem(PathItem::AnyFile, widget);
+    generatorLayout->addWidget(generatorPath);
+
+    layout->addLayout(generatorLayout);
+
+    auto *stdLayout = new QVBoxLayout();
+    stdLabel = new QLabel(tr("Standard Program Path"), widget);
+    stdLayout->addWidget(stdLabel);
+    stdPath = new PathItem(PathItem::AnyFile, widget);
+    stdLayout->addWidget(stdPath);
+
+    layout->addLayout(stdLayout);
 }
 } // namespace Widgets

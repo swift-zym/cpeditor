@@ -144,6 +144,8 @@ class AppWindow : public QMainWindow
 
     void on_actionUseSnippets_triggered();
 
+    void on_actionStressTesting_on_actionUseSnippets_triggered();
+
     void on_actionEditorMode_triggered();
 
     void on_actionIOMode_triggered();

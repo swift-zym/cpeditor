@@ -20,24 +20,23 @@
 
 #include <QMainWindow>
 
-class QCodeEditor;
-class MessageLogger;
-namespace Core
-{
-class Checker;
-}
+class PathItem;
+class QLabel;
+class MainWindow;
 
 namespace Widgets
 {
-class StressTesting : QMainWindow
+class StressTesting : public QMainWindow
 {
     Q_OBJECT
 
   public:
-    explicit StressTesting(MessageLogger *logger, QCodeEditor *editor, Core::Checker *Checker, const QString &lang,
-                           QWidget *parent = nullptr);
+    explicit StressTesting(QWidget *parent = nullptr);
 
   private:
+    MainWindow *mainWindow;
+    PathItem *generatorPath, *stdPath;
+    QLabel *generatorLable, *stdLabel;
 };
 } // namespace Widgets
 

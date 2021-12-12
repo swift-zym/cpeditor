@@ -31,7 +31,9 @@
 #include "Settings/PreferencesWindow.hpp"
 #include "Util/FileUtil.hpp"
 #include "Util/QCodeEditorUtil.hpp"
+#include "Util/Util.hpp"
 #include "Widgets/Stopwatch.hpp"
+#include "Widgets/StressTesting.hpp"
 #include "Widgets/TestCases.hpp"
 #include "appwindow.hpp"
 #include "generated/SettingsHelper.hpp"
@@ -78,6 +80,8 @@ MainWindow::MainWindow(int index, AppWindow *parent)
         Qt::DirectConnection);
     applySettings("");
     QTimer::singleShot(0, [this] { setLanguage(language); }); // See issue #187 for more information
+
+    stressTesting = new Widgets::StressTesting(this);
 }
 
 MainWindow::MainWindow(const QString &fileOpen, int index, AppWindow *parent) : MainWindow(index, parent)
@@ -132,6 +136,11 @@ void MainWindow::setStopwatch()
     stopwatch = new Widgets::Stopwatch{this};
     ui->stopWatchLayout->addWidget(stopwatch);
     stopwatch->setVisible(SettingsHelper::isDisplayStopwatch());
+}
+
+void MainWindow::showStressTesting()
+{
+    Util::showWidgetOnTop(stressTesting);
 }
 
 void MainWindow::compile()
