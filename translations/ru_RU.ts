@@ -2968,6 +2968,70 @@ This may reduce distractions caused by stopwatch updates.</source>
         <source>Invalid arguments pattern</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Read Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read Standard Program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to open generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to open standard program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create temporary directory</source>
+        <translation type="unfinished">Ошибка при создании временной директории</translation>
+    </message>
+    <message>
+        <source>Read testlib.h</source>
+        <translation type="unfinished">Чтение testlib.h</translation>
+    </message>
+    <message>
+        <source>Save testlib.h</source>
+        <translation type="unfinished">Сохранить testlib.h</translation>
+    </message>
+    <message>
+        <source>Compiler</source>
+        <translation type="unfinished">Компилятор</translation>
+    </message>
+    <message>
+        <source>Generator compilation has started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generator compilation has finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User program compilation has started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User program compilation has finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard program compilation has started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard program compilation has finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All tests finished, no countertest found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running test with arguments &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Widgets::TestCase</name>
