@@ -74,6 +74,9 @@ StressTesting::StressTesting(QWidget *parent) : QMainWindow(parent), mainWindow(
     controlLayout->addWidget(stopButton);
 
     layout->addLayout(controlLayout);
+
+    connect(startButton, &QPushButton::click, this, &StressTesting::start);
+    connect(stopButton, &QPushButton::click, this, &StressTesting::stop);
 }
 
 void StressTesting::start()
