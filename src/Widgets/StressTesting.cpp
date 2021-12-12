@@ -107,7 +107,7 @@ void StressTesting::start()
                 break;
             }
             argumentsCount++;
-            realArgumentsString += "@";
+            realArgumentsString += "%";
             realArgumentsString += QString::number(argumentsCount);
             QString range = pattern.mid(leftBracketPos + 1, currentPos - leftBracketPos - 1);
             QStringList tmp = range.split("..");
@@ -134,6 +134,9 @@ void StressTesting::start()
         }
         currentPos++;
     }
+
+    ok &= (leftBracketPos == -1);
+
     if (!ok)
     {
         mainWindow->getLogger()->error(tr("Stress Testing"), tr("Invalid arguments pattern"));
