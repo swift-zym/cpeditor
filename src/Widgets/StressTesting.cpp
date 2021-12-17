@@ -50,7 +50,7 @@ StressTesting::StressTesting(QWidget *parent)
     resize(400, 360);
 
     auto *generatorLayout = new QHBoxLayout();
-    generatorLable = new QLabel(tr("%1 Path:"), widget);
+    generatorLable = new QLabel(tr("Generator Path:"), widget);
     generatorLayout->addWidget(generatorLable);
     generatorPath = new PathItem(PathItem::CppSource, widget);
     generatorLayout->addWidget(generatorPath);
@@ -360,7 +360,7 @@ void StressTesting::onRunFinished(int index, const QString &out, const QString &
             in = out;
 
             QString language = mainWindow->getLanguage();
-            stdRunner = new Core::Runner(0);
+            stdRunner = new Core::Runner(1);
             connect(stdRunner, &Core::Runner::runFinished, this, &StressTesting::onRunFinished);
             connect(stdRunner, &Core::Runner::runOutputLimitExceeded, this, &StressTesting::onRunOutputLimitExceeded);
             connect(stdRunner, &Core::Runner::runKilled, this, &StressTesting::onRunKilled);
@@ -369,7 +369,7 @@ void StressTesting::onRunFinished(int index, const QString &out, const QString &
                            SettingsManager::get(QString("%1/Run Arguments").arg(language)).toString(), in,
                            mainWindow->timeLimit());
 
-            userRunner = new Core::Runner(0);
+            userRunner = new Core::Runner(2);
             connect(userRunner, &Core::Runner::runFinished, this, &StressTesting::onRunFinished);
             connect(userRunner, &Core::Runner::runOutputLimitExceeded, this, &StressTesting::onRunOutputLimitExceeded);
             connect(userRunner, &Core::Runner::runKilled, this, &StressTesting::onRunKilled);
