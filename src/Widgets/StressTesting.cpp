@@ -23,6 +23,7 @@
 #include "Core/Runner.hpp"
 #include "Settings/PathItem.hpp"
 #include "Util/FileUtil.hpp"
+#include "Widgets/TestCase.hpp"
 #include "generated/SettingsHelper.hpp"
 #include "mainwindow.hpp"
 #include <QCodeEditor>
@@ -37,9 +38,9 @@
 namespace Widgets
 {
 StressTesting::StressTesting(QWidget *parent)
-    : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent)), compiledCount(0)
+    : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent)), compiledCount(0), runFinishedCount(0)
 {
-    logger = mainWindow->getLogger();
+    log = mainWindow->getLogger();
 
     auto *widget = new QWidget(this);
     auto *layout = new QVBoxLayout();
@@ -49,7 +50,7 @@ StressTesting::StressTesting(QWidget *parent)
     resize(400, 360);
 
     auto *generatorLayout = new QHBoxLayout();
-    generatorLable = new QLabel(tr("Generator Path:"), widget);
+    generatorLable = new QLabel(tr("%1 Path:"), widget);
     generatorLayout->addWidget(generatorLable);
     generatorPath = new PathItem(PathItem::CppSource, widget);
     generatorLayout->addWidget(generatorPath);
@@ -146,13 +147,12 @@ void StressTesting::start()
 
     if (!ok)
     {
-        logger->error(tr("Stress Testing"), tr("Invalid arguments pattern"));
+        log->error(tr("Stress Testing"), tr("Invalid arguments pattern"));
         return;
     }
     std::function<void(QString, int)> add = [&](const QString &current, int index) {
         if (index == argumentsRange.length())
         {
-            LOG_INFO(INFO_OF(current));
             tests.append(current);
             return;
         }
@@ -161,21 +161,22 @@ void StressTesting::start()
             add(current.arg(QString::number(i)), index + 1);
         }
     };
+
     add(realArgumentsString, 0);
 
-    QString generatorCode = Util::readFile(generatorPath->getLineEdit()->text(), tr("Read Generator"), logger);
+    QString generatorCode = Util::readFile(generatorPath->getLineEdit()->text(), tr("Read Generator"), log);
     QString userCode = mainWindow->getEditor()->toPlainText();
-    QString stdCode = Util::readFile(stdPath->getLineEdit()->text(), tr("Read Standard Program"), logger);
+    QString stdCode = Util::readFile(stdPath->getLineEdit()->text(), tr("Read Standard Program"), log);
 
     if (generatorCode.isNull())
     {
-        logger->error(tr("Stress Testing"), tr("Failed to open generator"));
+        log->error(tr("Stress Testing"), tr("Failed to open generator"));
         return;
     }
 
     if (stdCode.isNull())
     {
-        logger->error(tr("Stress Testing"), tr("Failed to open standard program"));
+        log->error(tr("Stress Testing"), tr("Failed to open standard program"));
         return;
     }
 
@@ -183,7 +184,7 @@ void StressTesting::start()
 
     if (!tmpDir->isValid())
     {
-        logger->error(tr("Stress Testing"), tr("Failed to create temporary directory"));
+        log->error(tr("Stress Testing"), tr("Failed to create temporary directory"));
         return;
     }
 
@@ -191,17 +192,15 @@ void StressTesting::start()
     userTmpPath = tmpDir->filePath("user.cpp");
     stdTmpPath = tmpDir->filePath("std.cpp");
 
-    if (!Util::saveFile(generatorTmpPath, generatorCode, tr("Stress Testing"), false, logger))
-        return;
-    if (!Util::saveFile(userTmpPath, userCode, tr("Stress Testing"), false, logger))
-        return;
-    if (!Util::saveFile(stdTmpPath, stdCode, tr("Stress Testing"), false, logger))
+    if (!Util::saveFile(generatorTmpPath, generatorCode, tr("Stress Testing"), false, log) ||
+        !Util::saveFile(userTmpPath, userCode, tr("Stress Testing"), false, log) ||
+        !Util::saveFile(stdTmpPath, stdCode, tr("Stress Testing"), false, log))
         return;
 
-    auto testlib_h = Util::readFile(":/testlib/testlib.h", tr("Read testlib.h"), logger);
+    auto testlib_h = Util::readFile(":/testlib/testlib.h", tr("Read testlib.h"), log);
     if (testlib_h.isNull())
         return;
-    if (!Util::saveFile(tmpDir->filePath("testlib.h"), testlib_h, tr("Save testlib.h"), false, logger))
+    if (!Util::saveFile(tmpDir->filePath("testlib.h"), testlib_h, tr("Save testlib.h"), false, log))
         return;
 
     compiledCount = 0;
@@ -239,12 +238,12 @@ void StressTesting::start()
 
 void StressTesting::onGeneratorCompilationStarted()
 {
-    logger->info(tr("Compiler"), tr("Generator compilation has started"));
+    log->info(tr("Compiler"), tr("Generator compilation has started"));
 }
 
 void StressTesting::onGeneratorCompilationFinished()
 {
-    logger->info(tr("Compiler"), tr("Generator compilation has finished"));
+    log->info(tr("Compiler"), tr("Generator compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
     {
@@ -254,12 +253,12 @@ void StressTesting::onGeneratorCompilationFinished()
 
 void StressTesting::onUserCompilationStarted()
 {
-    logger->info(tr("Compiler"), tr("User program compilation has started"));
+    log->info(tr("Compiler"), tr("User program compilation has started"));
 }
 
 void StressTesting::onUserCompilationFinished()
 {
-    logger->info(tr("Compiler"), tr("User program compilation has finished"));
+    log->info(tr("Compiler"), tr("User program compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
     {
@@ -269,12 +268,12 @@ void StressTesting::onUserCompilationFinished()
 
 void StressTesting::onStdCompilationStarted()
 {
-    logger->info(tr("Compiler"), tr("Standard program compilation has started"));
+    log->info(tr("Compiler"), tr("Standard program compilation has started"));
 }
 
 void StressTesting::onStdCompilationFinished()
 {
-    logger->info(tr("Compiler"), tr("Standard program compilation has finished"));
+    log->info(tr("Compiler"), tr("Standard program compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
     {
@@ -301,18 +300,19 @@ void StressTesting::nextTest()
     if (tests.empty())
     {
         stop();
-        logger->info(tr("Stress Testing"), tr("All tests finished, no countertest found"));
+        log->info(tr("Stress Testing"), tr("All tests finished, no countertest found"));
         return;
     }
     QString arguments = tests.front();
     tests.pop_front();
-    logger->info(tr("Stress Testing"), tr("Running with arguments \"%1\"").arg(arguments));
+    log->info(tr("Stress Testing"), tr("Running with arguments \"%1\"").arg(arguments));
 
-    generatorRunner = new Core::Runner(-1);
-    connect(generatorRunner, &Core::Runner::runFinished, this, &StressTesting::onGeneratorRunFinished);
-    connect(generatorRunner, &Core::Runner::runOutputLimitExceeded, this,
-            &StressTesting::onGeneratorRunOutputLimitExceeded);
-    connect(generatorRunner, &Core::Runner::runKilled, this, &StressTesting::onGeneratorRunKilled);
+    runFinishedCount = 0;
+
+    generatorRunner = new Core::Runner(0);
+    connect(generatorRunner, &Core::Runner::runFinished, this, &StressTesting::onRunFinished);
+    connect(generatorRunner, &Core::Runner::runOutputLimitExceeded, this, &StressTesting::onRunOutputLimitExceeded);
+    connect(generatorRunner, &Core::Runner::runKilled, this, &StressTesting::onRunKilled);
     generatorRunner->run(generatorTmpPath, "", "C++", "", arguments, "", SettingsHelper::getDefaultTimeLimit());
 }
 
@@ -334,15 +334,94 @@ void StressTesting::onCompilationKilled()
     emit compilationKilled();
 }
 
-void StressTesting::onGeneratorRunFinished()
+void StressTesting::onRunFinished(int index, const QString &out, const QString & /*unused*/, int exitCode,
+                                  qint64 timeUsed, bool tle)
+{
+    QString head;
+    if (index == 0)
+    {
+        head = tr("Generator");
+    }
+    else if (index == 1)
+    {
+        head = tr("User program");
+    }
+    else if (index == 2)
+    {
+        head = tr("Standard program");
+    }
+
+    if (exitCode == 0)
+    {
+        log->info(head, tr("Execution has finished in %1ms").arg(timeUsed));
+        if (index == 0)
+        { // Generator
+
+            in = out;
+
+            QString language = mainWindow->getLanguage();
+            stdRunner = new Core::Runner(0);
+            connect(stdRunner, &Core::Runner::runFinished, this, &StressTesting::onRunFinished);
+            connect(stdRunner, &Core::Runner::runOutputLimitExceeded, this, &StressTesting::onRunOutputLimitExceeded);
+            connect(stdRunner, &Core::Runner::runKilled, this, &StressTesting::onRunKilled);
+            stdRunner->run(stdTmpPath, "", language,
+                           SettingsManager::get(QString("%1/Run Command").arg(language)).toString(),
+                           SettingsManager::get(QString("%1/Run Arguments").arg(language)).toString(), in,
+                           mainWindow->timeLimit());
+
+            userRunner = new Core::Runner(0);
+            connect(userRunner, &Core::Runner::runFinished, this, &StressTesting::onRunFinished);
+            connect(userRunner, &Core::Runner::runOutputLimitExceeded, this, &StressTesting::onRunOutputLimitExceeded);
+            connect(userRunner, &Core::Runner::runKilled, this, &StressTesting::onRunKilled);
+            userRunner->run(userTmpPath, "", language,
+                            SettingsManager::get(QString("%1/Run Command").arg(language)).toString(),
+                            SettingsManager::get(QString("%1/Run Arguments").arg(language)).toString(), in,
+                            mainWindow->timeLimit());
+        }
+        else
+        {
+            runFinishedCount++;
+            if (index == 1)
+                stdOut = out;
+            else
+                userOut = out;
+            if (runFinishedCount == 2)
+            {
+                mainWindow->getChecker()->reqeustCheck(-1, in, userOut, stdOut);
+            }
+        }
+    }
+
+    else
+    {
+        if (tle)
+        {
+            log->warn(head, tr("Time Limit Exceeded"));
+        }
+
+        log->error(head, tr("Execution has finished with non-zero exitcode %1 in %2ms").arg(exitCode).arg(timeUsed));
+    }
+}
+
+void StressTesting::onRunKilled(int index)
 {
 }
 
-void StressTesting::onGeneratorRunKilled()
+void StressTesting::onRunOutputLimitExceeded(int index)
 {
 }
 
-void StressTesting::onGeneratorRunOutputLimitExceeded()
+void StressTesting::onCheckFinished(TestCase::Verdict verdict)
 {
+    if (verdict == TestCase::Verdict::AC)
+    {
+        log->info(tr("Stress Testing"), tr("Accepted"));
+        nextTest();
+    }
+    else
+    {
+        log->info(tr("Stress Testing"), tr("Wrong Answer"));
+    }
 }
+
 } // namespace Widgets

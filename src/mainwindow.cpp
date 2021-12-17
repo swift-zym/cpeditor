@@ -34,6 +34,7 @@
 #include "Util/Util.hpp"
 #include "Widgets/Stopwatch.hpp"
 #include "Widgets/StressTesting.hpp"
+#include "Widgets/TestCase.hpp"
 #include "Widgets/TestCases.hpp"
 #include "appwindow.hpp"
 #include "generated/SettingsHelper.hpp"
@@ -246,6 +247,18 @@ void MainWindow::runTestCase(int index)
     run(index);
 }
 
+void MainWindow::onCheckFinished(int index, Widgets::TestCase::Verdict verdict)
+{
+    if (index != -1)
+    {
+        testcases->setVerdict(index, verdict);
+    }
+    else
+    {
+        stressTesting->onCheckFinished(verdict);
+    }
+}
+
 void MainWindow::loadTests()
 {
     if (!isUntitled() && SettingsHelper::isSaveTests())
@@ -352,6 +365,11 @@ QString MainWindow::getTabTitle(bool complete, bool star, int removeLength)
 QCodeEditor *MainWindow::getEditor() const
 {
     return editor;
+}
+
+Core::Checker *MainWindow::getChecker() const
+{
+    return checker;
 }
 
 bool MainWindow::isUntitled() const
@@ -1276,7 +1294,7 @@ void MainWindow::updateChecker()
         checker = new Core::Checker(testcases->checkerText(), log, this);
     else
         checker = new Core::Checker(testcases->checkerType(), log, this);
-    connect(checker, &Core::Checker::checkFinished, testcases, &Widgets::TestCases::setVerdict);
+    connect(checker, &Core::Checker::checkFinished, this, &MainWindow::onCheckFinished);
     checker->prepare();
 }
 

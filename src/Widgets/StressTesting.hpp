@@ -18,6 +18,7 @@
 #ifndef STRESSTESTING_HPP
 #define STRESSTESTING_HPP
 
+#include "Widgets/TestCase.hpp"
 #include <QMainWindow>
 
 class PathItem;
@@ -32,6 +33,7 @@ namespace Core
 {
 class Runner;
 class Compiler;
+class Checker;
 } // namespace Core
 
 namespace Widgets
@@ -42,6 +44,7 @@ class StressTesting : public QMainWindow
 
   public:
     explicit StressTesting(QWidget *parent = nullptr);
+    void onCheckFinished(TestCase::Verdict verdict);
 
   private:
     MainWindow *mainWindow;
@@ -56,12 +59,17 @@ class StressTesting : public QMainWindow
     Core::Compiler *generatorCompiler = nullptr;
     Core::Compiler *userCompiler = nullptr;
     Core::Compiler *stdCompiler = nullptr;
-    MessageLogger *logger = nullptr;
+    Core::Checker *checker = nullptr;
+    MessageLogger *log = nullptr;
     QTemporaryDir *tmpDir = nullptr;
     QString generatorTmpPath;
     QString userTmpPath;
     QString stdTmpPath;
+    QString userOut;
+    QString stdOut;
+    QString in;
     int compiledCount;
+    int runFinishedCount;
 
   signals:
     void compilationErrorOccurred(const QString &error);
@@ -81,9 +89,9 @@ class StressTesting : public QMainWindow
     void onStdCompilationFinished();
     void onUserCompilationStarted();
     void onUserCompilationFinished();
-    void onGeneratorRunFinished();
-    void onGeneratorRunOutputLimitExceeded();
-    void onGeneratorRunKilled();
+    void onRunFinished(int index, const QString &out, const QString &err, int exitCode, qint64 timeUsed, bool tle);
+    void onRunOutputLimitExceeded(int index);
+    void onRunKilled(int index);
 };
 } // namespace Widgets
 
