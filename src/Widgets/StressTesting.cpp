@@ -304,8 +304,8 @@ void StressTesting::stop()
     startButton->setDisabled(false);
     stopButton->setDisabled(true);
 
-    generatorRunner = NULL, userRunner = NULL, stdRunner = NULL, generatorCompiler = NULL, userCompiler = NULL,
-    stdCompiler = NULL;
+    generatorRunner = nullptr, userRunner = nullptr, stdRunner = nullptr, generatorCompiler = nullptr,
+    userCompiler = nullptr, stdCompiler = nullptr;
 }
 
 void StressTesting::nextTest()
