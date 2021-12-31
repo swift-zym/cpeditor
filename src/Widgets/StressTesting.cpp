@@ -293,12 +293,12 @@ void StressTesting::onStdCompilationFinished()
 
 void StressTesting::stop()
 {
-    delete generatorRunner;
+    /*delete generatorRunner;
     delete userRunner;
     delete stdRunner;
     delete generatorCompiler;
     delete userCompiler;
-    delete stdCompiler;
+    delete stdCompiler;*/
 
     tests.clear();
     startButton->setDisabled(false);
