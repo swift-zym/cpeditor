@@ -38,7 +38,8 @@
 namespace Widgets
 {
 StressTesting::StressTesting(QWidget *parent)
-    : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent)), compiledCount(0), runFinishedCount(0)
+    : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent)), compiledCount(0), runFinishedCount(0),
+      isRunning(false)
 {
     log = mainWindow->getLogger();
 
@@ -91,6 +92,9 @@ void StressTesting::start()
 
     LOG_WTF("Starting stress testing");
     stop();
+
+    isRunning = true;
+
     QString pattern = argumentsPattern->text();
     QString tmp = "";
     QVector<QPair<unsigned long long, unsigned long long>> argumentsRange;
@@ -250,7 +254,8 @@ void StressTesting::onGeneratorCompilationStarted()
 
 void StressTesting::onGeneratorCompilationFinished()
 {
-    LOG_WTF("Generator compilation has finished");
+    if (!isRunning)
+        return;
     log->info(tr("Compiler"), tr("Generator compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
@@ -266,7 +271,8 @@ void StressTesting::onUserCompilationStarted()
 
 void StressTesting::onUserCompilationFinished()
 {
-    LOG_WTF("User program compilation has finished");
+    if (!isRunning)
+        return;
     log->info(tr("Compiler"), tr("User program compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
@@ -282,7 +288,8 @@ void StressTesting::onStdCompilationStarted()
 
 void StressTesting::onStdCompilationFinished()
 {
-    LOG_WTF("Standard program compilation has finished");
+    if (!isRunning)
+        return;
     log->info(tr("Compiler"), tr("Standard program compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
@@ -293,6 +300,9 @@ void StressTesting::onStdCompilationFinished()
 
 void StressTesting::stop()
 {
+
+    isRunning = false;
+
     delete generatorRunner;
     delete userRunner;
     delete stdRunner;
@@ -350,6 +360,10 @@ void StressTesting::onCompilationKilled()
 void StressTesting::onRunFinished(int index, const QString &out, const QString & /*unused*/, int exitCode,
                                   qint64 timeUsed, bool tle)
 {
+
+    if (!isRunning)
+        return;
+
     QString head;
     if (index == 0)
     {
