@@ -88,9 +88,11 @@ StressTesting::StressTesting(QWidget *parent)
 
 void StressTesting::start()
 {
+
+    LOG_WTF("Starting stress testing");
     stop();
     QString pattern = argumentsPattern->text();
-    QString realArgumentsString = "";
+    QString tmp = "";
     QVector<QPair<unsigned long long, unsigned long long>> argumentsRange;
     int argumentsCount = 0;
     int leftBracketPos = -1;
@@ -115,8 +117,8 @@ void StressTesting::start()
                 break;
             }
             argumentsCount++;
-            realArgumentsString += "%";
-            realArgumentsString += QString::number(argumentsCount);
+            tmp += "%";
+            tmp += QString::number(argumentsCount);
             QString range = pattern.mid(leftBracketPos + 1, currentPos - leftBracketPos - 1);
             QStringList tmp = range.split("..");
             if (tmp.length() != 2)
@@ -138,7 +140,7 @@ void StressTesting::start()
         }
         else if (leftBracketPos == -1)
         {
-            realArgumentsString += c;
+            tmp += c;
         }
         currentPos++;
     }
@@ -150,6 +152,9 @@ void StressTesting::start()
         log->error(tr("Stress Testing"), tr("Invalid arguments pattern"));
         return;
     }
+
+    pattern = tmp;
+
     std::function<void(QString, int)> add = [&](const QString &current, int index) {
         if (index == argumentsRange.length())
         {
@@ -162,7 +167,9 @@ void StressTesting::start()
         }
     };
 
-    add(realArgumentsString, 0);
+    add(pattern, 0);
+
+    LOG_WTF("Arguments processed");
 
     QString generatorCode = Util::readFile(generatorPath->getLineEdit()->text(), tr("Read Generator"), log);
     QString userCode = mainWindow->getEditor()->toPlainText();
@@ -243,6 +250,7 @@ void StressTesting::onGeneratorCompilationStarted()
 
 void StressTesting::onGeneratorCompilationFinished()
 {
+    LOG_WTF("Generator compilation has finished");
     log->info(tr("Compiler"), tr("Generator compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
@@ -258,6 +266,7 @@ void StressTesting::onUserCompilationStarted()
 
 void StressTesting::onUserCompilationFinished()
 {
+    LOG_WTF("User program compilation has finished");
     log->info(tr("Compiler"), tr("User program compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
@@ -273,6 +282,7 @@ void StressTesting::onStdCompilationStarted()
 
 void StressTesting::onStdCompilationFinished()
 {
+    LOG_WTF("Standard program compilation has finished");
     log->info(tr("Compiler"), tr("Standard program compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
