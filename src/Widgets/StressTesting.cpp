@@ -470,7 +470,7 @@ QPair<bool, QString> StressTesting::generateArguments()
     auto tmp = dfsStack.pop();
     QString current = tmp.first;
     int index = tmp.second;
-    
+
     if (index == argumentsRange.length())
     {
         return qMakePair(true, current);
