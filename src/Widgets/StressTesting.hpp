@@ -19,8 +19,8 @@
 #define STRESSTESTING_HPP
 
 #include "Widgets/TestCase.hpp"
-#include <QStack>
 #include <QMainWindow>
+#include <QStack>
 
 class PathItem;
 class QLabel;
