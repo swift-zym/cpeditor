@@ -94,13 +94,15 @@ void StressTesting::start()
     startButton->setDisabled(true);
     stopButton->setDisabled(false);
 
-    QString pattern = argumentsPattern->text();
-    QString tmp = "";
-    int argumentsCount = 0;
+    QString tmp = argumentsPattern->text();
+
+    pattern = "";
+    argumentsCount = 0;
+    
     int leftBracketPos = -1;
     int currentPos = 0;
     bool ok = true;
-    for (auto &&c : pattern)
+    for (auto &&c : tmp)
     {
         if (c == '[')
         {
@@ -121,7 +123,7 @@ void StressTesting::start()
             argumentsCount++;
             tmp += "%";
             tmp += QString::number(argumentsCount);
-            QString range = pattern.mid(leftBracketPos + 1, currentPos - leftBracketPos - 1);
+            QString range = tmp.mid(leftBracketPos + 1, currentPos - leftBracketPos - 1);
             QStringList tmp = range.split("..");
             if (tmp.length() != 2)
             {
@@ -137,6 +139,8 @@ void StressTesting::start()
                 break;
 
             argumentsRange.append(qMakePair(left, right));
+
+            currentValue.push_back(left);
 
             leftBracketPos = -1;
         }
@@ -155,7 +159,7 @@ void StressTesting::start()
         return;
     }
 
-    pattern = tmp;
+    tmp = tmp;
 
     dfsStack.push(qMakePair(pattern, 0));
 
@@ -290,7 +294,7 @@ void StressTesting::stop()
     delete stdCompiler;
 
     argumentsRange.clear();
-    dfsStack.clear();
+    currentValue.clear();
 
     startButton->setDisabled(false);
     stopButton->setDisabled(true);
@@ -303,20 +307,23 @@ void StressTesting::stop()
 
 void StressTesting::nextTest()
 {
-    if (dfsStack.empty())
+    for (int i = 0; i < argumentsCount; i++)
     {
-        stop();
-        log->info(tr("Stress Testing"), tr("All tests finished, no countertest found"));
-        return;
+        if (currentValue[i] != argumentsRange[i].second)
+        {
+            currentValue[i]++;
+            break;
+        }
+        else
+        {
+            currentValue[i] = argumentsRange[i].first;
+        }
     }
 
-    QString arguments;
-    bool ok = false;
-    do
-    {
-        QPair<bool, QString> tmp = generateArguments();
-        ok = tmp.first, arguments = tmp.second;
-    } while (!ok);
+    QString arguments = pattern;
+
+    for (int i = 0; i < argumentsCount; i++)
+        arguments = arguments.arg(QString::number(currentValue[i]));
 
     log->info(tr("Stress Testing"), tr("Running with arguments \"%1\"").arg(arguments));
 
@@ -411,6 +418,8 @@ void StressTesting::onRunFinished(int index, const QString &out, const QString &
             log->warn(head, tr("Time Limit Exceeded"));
         }
         log->error(head, tr("Execution has finished with non-zero exitcode %1 in %2ms").arg(exitCode).arg(timeUsed));
+
+        stop();
     }
 }
 
@@ -431,6 +440,8 @@ void StressTesting::onRunKilled(int index)
     }
 
     log->error(head, tr("The program was killed"));
+
+    stop();
 }
 
 void StressTesting::onRunOutputLimitExceeded(int index)
@@ -450,6 +461,8 @@ void StressTesting::onRunOutputLimitExceeded(int index)
     }
 
     log->warn(head, tr("Output limit exceeded"));
+
+    stop();
 }
 
 void StressTesting::onCheckFinished(TestCase::Verdict verdict)
@@ -462,24 +475,8 @@ void StressTesting::onCheckFinished(TestCase::Verdict verdict)
     else
     {
         log->message(tr("Stress Testing"), tr("Wrong Answer"), "red");
+        stop();
     }
-}
-
-QPair<bool, QString> StressTesting::generateArguments()
-{
-    auto tmp = dfsStack.pop();
-    QString current = tmp.first;
-    int index = tmp.second;
-
-    if (index == argumentsRange.length())
-    {
-        return qMakePair(true, current);
-    }
-    for (unsigned long long i = argumentsRange[index].first; i <= argumentsRange[index].second; i++)
-    {
-        dfsStack.push(qMakePair(current.arg(QString::number(i)), index + 1));
-    }
-    return qMakePair(false, QString());
 }
 
 } // namespace Widgets

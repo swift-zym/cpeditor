@@ -20,7 +20,6 @@
 
 #include "Widgets/TestCase.hpp"
 #include <QMainWindow>
-#include <QStack>
 
 class PathItem;
 class QLabel;
@@ -54,7 +53,7 @@ class StressTesting : public QMainWindow
     QLineEdit *argumentsPattern = nullptr;
     QPushButton *startButton = nullptr, *stopButton = nullptr;
     QVector<QPair<unsigned long long, unsigned long long>> argumentsRange;
-    QStack<QPair<QString, int>> dfsStack;
+    QVector<unsigned long long> currentValue;
     Core::Runner *generatorRunner = nullptr;
     Core::Runner *userRunner = nullptr;
     Core::Runner *stdRunner = nullptr;
@@ -69,12 +68,12 @@ class StressTesting : public QMainWindow
     QString stdTmpPath;
     QString userOut;
     QString stdOut;
+    QString pattern;
     QString in;
     int compiledCount;
     int runFinishedCount;
+    int argumentsCount;
     std::atomic<bool> stopping;
-
-    QPair<bool, QString> generateArguments();
 
   signals:
     void compilationErrorOccurred(const QString &error);
