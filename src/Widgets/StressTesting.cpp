@@ -91,6 +91,10 @@ void StressTesting::start()
 
     LOG_WTF("Starting stress testing");
     stop();
+
+    startButton->setDisabled(true);
+    stopButton->setDisabled(false);
+
     QString pattern = argumentsPattern->text();
     QString tmp = "";
     QVector<QPair<unsigned long long, unsigned long long>> argumentsRange;
@@ -293,6 +297,7 @@ void StressTesting::onStdCompilationFinished()
 
 void StressTesting::stop()
 {
+    LOG_WTF("Stop");
     /*delete generatorRunner;
     delete userRunner;
     delete stdRunner;
@@ -343,6 +348,7 @@ void StressTesting::onCompilationFailed(const QString &reason)
 
 void StressTesting::onCompilationKilled()
 {
+    LOG_WTF("Killed");
     stop();
     emit compilationKilled();
 }
