@@ -314,7 +314,8 @@ void StressTesting::nextTest()
     bool ok = false;
     do
     {
-        std::tie(ok, arguments) = generateArguments();
+        QPair<bool, QString> tmp = generateArguments();
+        ok = tmp.first, arguments = tmp.second;
     } while (!ok);
 
     log->info(tr("Stress Testing"), tr("Running with arguments \"%1\"").arg(arguments));
