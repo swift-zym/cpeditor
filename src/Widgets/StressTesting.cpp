@@ -38,7 +38,8 @@
 namespace Widgets
 {
 StressTesting::StressTesting(QWidget *parent)
-    : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent)), compiledCount(0), runFinishedCount(0)
+    : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent)), compiledCount(0), runFinishedCount(0),
+      stopping(false)
 {
     log = mainWindow->getLogger();
 
@@ -297,13 +298,17 @@ void StressTesting::onStdCompilationFinished()
 
 void StressTesting::stop()
 {
+    if (stopping)
+        return;
+    stopping = true;
     LOG_WTF("Stop");
-    /*delete generatorRunner;
+
+    delete generatorRunner;
     delete userRunner;
     delete stdRunner;
     delete generatorCompiler;
     delete userCompiler;
-    delete stdCompiler;*/
+    delete stdCompiler;
 
     tests.clear();
     startButton->setDisabled(false);
@@ -311,6 +316,8 @@ void StressTesting::stop()
 
     generatorRunner = nullptr, userRunner = nullptr, stdRunner = nullptr, generatorCompiler = nullptr,
     userCompiler = nullptr, stdCompiler = nullptr;
+
+    stopping = false;
 }
 
 void StressTesting::nextTest()
@@ -410,14 +417,12 @@ void StressTesting::onRunFinished(int index, const QString &out, const QString &
             }
         }
     }
-
     else
     {
         if (tle)
         {
             log->warn(head, tr("Time Limit Exceeded"));
         }
-
         log->error(head, tr("Execution has finished with non-zero exitcode %1 in %2ms").arg(exitCode).arg(timeUsed));
     }
 }

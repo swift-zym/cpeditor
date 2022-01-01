@@ -70,6 +70,7 @@ class StressTesting : public QMainWindow
     QString in;
     int compiledCount;
     int runFinishedCount;
+    std::atomic<bool> stopping;
 
   signals:
     void compilationErrorOccurred(const QString &error);
