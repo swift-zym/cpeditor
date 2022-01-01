@@ -74,7 +74,7 @@ class StressTesting : public QMainWindow
     int runFinishedCount;
     std::atomic<bool> stopping;
 
-    std::pair<bool, QString> generateArguments();
+    QPair<bool, QString> generateArguments();
 
   signals:
     void compilationErrorOccurred(const QString &error);

@@ -464,18 +464,18 @@ void StressTesting::onCheckFinished(TestCase::Verdict verdict)
     }
 }
 
-std::pair<bool, QString> StressTesting::generateArguments()
+QPair<bool, QString> StressTesting::generateArguments()
 {
     auto [current, index] = dfsStack.pop();
     if (index == argumentsRange.length())
     {
-        return std::make_pair(true, current);
+        return qMakePair(true, current);
     }
     for (unsigned long long i = argumentsRange[index].first; i <= argumentsRange[index].second; i++)
     {
         dfsStack.push(qMakePair(current.arg(QString::number(i)), index + 1));
     }
-    return std::make_pair(false, "");
+    return qMakePair(false, "");
 }
 
 } // namespace Widgets
