@@ -138,7 +138,7 @@ void StressTesting::start()
             if (!ok)
                 break;
 
-            argumentsRange.append(qMakePair(left, right));
+            argumentsRange.append(qMakePair(argumentsCount == 1 ? left - 1 : left, right));
 
             currentValue.push_back(left);
 
@@ -149,6 +149,12 @@ void StressTesting::start()
             pattern += c;
         }
         currentPos++;
+    }
+
+    if (argumentsCount == 0)
+    {
+        currentValue.push_back(0);
+        argumentsRange.push_back(qMakePair(0, 1));
     }
 
     ok &= (leftBracketPos == -1);
@@ -305,13 +311,12 @@ void StressTesting::nextTest()
 {
     for (int i = 0; i <= argumentsCount; i++)
     {
-        if (i == argumentsCount)
+        if (i == argumentsCount && (argumentsCount != 0 || currentValue[0]))
         {
             stop();
             log->info(tr("Stress Testing"), tr("All tests finished, no countertest found"));
             return;
         }
-
         if (currentValue[i] != argumentsRange[i].second)
         {
             currentValue[i]++;
