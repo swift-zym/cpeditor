@@ -94,7 +94,7 @@ void StressTesting::start()
     startButton->setDisabled(true);
     stopButton->setDisabled(false);
 
-    QString tmp = argumentsPattern->text();
+    QString source = argumentsPattern->text();
 
     pattern = "";
     argumentsCount = 0;
@@ -102,7 +102,7 @@ void StressTesting::start()
     int leftBracketPos = -1;
     int currentPos = 0;
     bool ok = true;
-    for (auto &&c : tmp)
+    for (auto &&c : source)
     {
         if (c == '[')
         {
@@ -121,9 +121,9 @@ void StressTesting::start()
                 break;
             }
             argumentsCount++;
-            tmp += "%";
-            tmp += QString::number(argumentsCount);
-            QString range = tmp.mid(leftBracketPos + 1, currentPos - leftBracketPos - 1);
+            pattern += "%";
+            pattern += QString::number(argumentsCount);
+            QString range = source.mid(leftBracketPos + 1, currentPos - leftBracketPos - 1);
             QStringList tmp = range.split("..");
             if (tmp.length() != 2)
             {
@@ -146,7 +146,7 @@ void StressTesting::start()
         }
         else if (leftBracketPos == -1)
         {
-            tmp += c;
+            pattern += c;
         }
         currentPos++;
     }
@@ -158,8 +158,6 @@ void StressTesting::start()
         log->error(tr("Stress Testing"), tr("Invalid arguments pattern"));
         return;
     }
-
-    tmp = tmp;
 
     QString generatorCode = Util::readFile(generatorPath->getLineEdit()->text(), tr("Read Generator"), log);
     QString userCode = mainWindow->getEditor()->toPlainText();
