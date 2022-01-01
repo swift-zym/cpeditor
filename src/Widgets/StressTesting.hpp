@@ -52,7 +52,8 @@ class StressTesting : public QMainWindow
     QLabel *generatorLable = nullptr, *stdLabel = nullptr, *argumentsPatternLabel = nullptr;
     QLineEdit *argumentsPattern = nullptr;
     QPushButton *startButton = nullptr, *stopButton = nullptr;
-    QVector<QString> tests;
+    QVector<QPair<unsigned long long, unsigned long long>> argumentsRange;
+    QStack<QPair<QString, int>> dfsStack;
     Core::Runner *generatorRunner = nullptr;
     Core::Runner *userRunner = nullptr;
     Core::Runner *stdRunner = nullptr;
@@ -71,6 +72,8 @@ class StressTesting : public QMainWindow
     int compiledCount;
     int runFinishedCount;
     std::atomic<bool> stopping;
+
+    QPair<bool,QString> generateArguments();
 
   signals:
     void compilationErrorOccurred(const QString &error);

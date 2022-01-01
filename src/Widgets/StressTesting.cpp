@@ -96,7 +96,6 @@ void StressTesting::start()
 
     QString pattern = argumentsPattern->text();
     QString tmp = "";
-    QVector<QPair<unsigned long long, unsigned long long>> argumentsRange;
     int argumentsCount = 0;
     int leftBracketPos = -1;
     int currentPos = 0;
@@ -158,20 +157,7 @@ void StressTesting::start()
 
     pattern = tmp;
 
-    std::function<void(QString, int)> add = [&](const QString &current, int index) {
-        if (index == argumentsRange.length())
-        {
-            tests.append(current);
-            return;
-        }
-        for (unsigned long long i = argumentsRange[index].first; i <= argumentsRange[index].second; i++)
-        {
-            add(current.arg(QString::number(i)), index + 1);
-        }
-    };
-
-    add(pattern, 0);
-
+    dfsStack.push(qMakePair(pattern, 0));
 
     QString generatorCode = Util::readFile(generatorPath->getLineEdit()->text(), tr("Read Generator"), log);
     QString userCode = mainWindow->getEditor()->toPlainText();
@@ -303,7 +289,10 @@ void StressTesting::stop()
     delete userCompiler;
     delete stdCompiler;
 
-    tests.clear();
+    argumentsRange.clear();
+    while (!dfsStack.empty())
+        dfsStack.pop();
+
     startButton->setDisabled(false);
     stopButton->setDisabled(true);
 
@@ -315,14 +304,19 @@ void StressTesting::stop()
 
 void StressTesting::nextTest()
 {
-    if (tests.empty())
+    if (dfsStack.empty())
     {
         stop();
         log->info(tr("Stress Testing"), tr("All tests finished, no countertest found"));
         return;
     }
-    QString arguments = tests.front();
-    tests.pop_front();
+
+    QString arguments;
+    bool ok=false;
+    do{
+        std::tie(ok,arguments) = generateArguments();
+    }while(!ok);
+    
     log->info(tr("Stress Testing"), tr("Running with arguments \"%1\"").arg(arguments));
 
     runFinishedCount = 0;
@@ -468,6 +462,20 @@ void StressTesting::onCheckFinished(TestCase::Verdict verdict)
     {
         log->message(tr("Stress Testing"), tr("Wrong Answer"), "red");
     }
+}
+
+QPair<bool,QString> StressTesting::generateArguments()
+{
+    auto [current,index] = dfsStack.pop();
+    if (index == argumentsRange.length())
+    {
+        return qMakePair(true,current);
+    }
+    for (unsigned long long i = argumentsRange[index].first; i <= argumentsRange[index].second; i++)
+    {
+        dfsStack.push(qMakePair(current.arg(QString::number(i)), index + 1));
+    }
+    return qMakePair(false,"");
 }
 
 } // namespace Widgets
