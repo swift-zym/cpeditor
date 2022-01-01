@@ -476,7 +476,7 @@ Git commit hash: %3
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Stress Testing</source>
+        <source>Stress Testing...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3029,7 +3029,47 @@ This may reduce distractions caused by stopwatch updates.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Running test with arguments &quot;%1&quot;</source>
+        <source>Running with arguments &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Execution has finished in %1ms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time Limit Exceeded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Execution has finished with non-zero exitcode %1 in %2ms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The program was killed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output limit exceeded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accepted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong Answer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

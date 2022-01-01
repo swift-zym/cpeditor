@@ -151,18 +151,18 @@ void StressTesting::start()
         currentPos++;
     }
 
-    if (argumentsCount == 0)
-    {
-        currentValue.push_back(0);
-        argumentsRange.push_back(qMakePair(0, 1));
-    }
-
     ok &= (leftBracketPos == -1);
 
     if (!ok)
     {
         log->error(tr("Stress Testing"), tr("Invalid arguments pattern"));
         return;
+    }
+
+    if (argumentsCount == 0)
+    {
+        currentValue.push_back(0);
+        argumentsRange.push_back(qMakePair(0, 1));
     }
 
     QString generatorCode = Util::readFile(generatorPath->getLineEdit()->text(), tr("Read Generator"), log);
