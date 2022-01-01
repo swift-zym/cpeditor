@@ -303,9 +303,6 @@ void StressTesting::stop()
 
 void StressTesting::nextTest()
 {
-    if (currentValue.size() == 0)
-        return;
-
     for (int i = 0; i <= argumentsCount; i++)
     {
         if (i == argumentsCount)
