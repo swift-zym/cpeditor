@@ -381,7 +381,7 @@
   </action>
   <action name="actionStressTesting">
    <property name="text">
-    <string>Stress Testing</string>
+    <string>Stress Testing...</string>
    </property>
   </action>
   <action name="actionSettings">

@@ -89,8 +89,6 @@ StressTesting::StressTesting(QWidget *parent)
 
 void StressTesting::start()
 {
-
-    LOG_WTF("Starting stress testing");
     stop();
 
     startButton->setDisabled(true);
@@ -174,7 +172,6 @@ void StressTesting::start()
 
     add(pattern, 0);
 
-    LOG_WTF("Arguments processed");
 
     QString generatorCode = Util::readFile(generatorPath->getLineEdit()->text(), tr("Read Generator"), log);
     QString userCode = mainWindow->getEditor()->toPlainText();
@@ -255,7 +252,6 @@ void StressTesting::onGeneratorCompilationStarted()
 
 void StressTesting::onGeneratorCompilationFinished()
 {
-    LOG_WTF("Generator compilation has finished");
     log->info(tr("Compiler"), tr("Generator compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
@@ -271,7 +267,6 @@ void StressTesting::onUserCompilationStarted()
 
 void StressTesting::onUserCompilationFinished()
 {
-    LOG_WTF("User program compilation has finished");
     log->info(tr("Compiler"), tr("User program compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
@@ -287,7 +282,6 @@ void StressTesting::onStdCompilationStarted()
 
 void StressTesting::onStdCompilationFinished()
 {
-    LOG_WTF("Standard program compilation has finished");
     log->info(tr("Compiler"), tr("Standard program compilation has finished"));
     compiledCount++;
     if (compiledCount == 3)
@@ -301,7 +295,6 @@ void StressTesting::stop()
     if (stopping)
         return;
     stopping = true;
-    LOG_WTF("Stop");
 
     delete generatorRunner;
     delete userRunner;
@@ -355,7 +348,6 @@ void StressTesting::onCompilationFailed(const QString &reason)
 
 void StressTesting::onCompilationKilled()
 {
-    LOG_WTF("Killed");
     stop();
     emit compilationKilled();
 }
@@ -429,22 +421,52 @@ void StressTesting::onRunFinished(int index, const QString &out, const QString &
 
 void StressTesting::onRunKilled(int index)
 {
+    QString head;
+    if (index == 0)
+    {
+        head = tr("Generator");
+    }
+    else if (index == 1)
+    {
+        head = tr("User program");
+    }
+    else if (index == 2)
+    {
+        head = tr("Standard program");
+    }
+
+    log->error(head, tr("The program was killed"));
 }
 
 void StressTesting::onRunOutputLimitExceeded(int index)
 {
+    QString head;
+    if (index == 0)
+    {
+        head = tr("Generator");
+    }
+    else if (index == 1)
+    {
+        head = tr("User program");
+    }
+    else if (index == 2)
+    {
+        head = tr("Standard program");
+    }
+
+    log->warn(head, tr("Output limit exceeded"));
 }
 
 void StressTesting::onCheckFinished(TestCase::Verdict verdict)
 {
     if (verdict == TestCase::Verdict::AC)
     {
-        log->info(tr("Stress Testing"), tr("Accepted"));
+        log->message(tr("Stress Testing"), tr("Accepted"), "green");
         nextTest();
     }
     else
     {
-        log->info(tr("Stress Testing"), tr("Wrong Answer"));
+        log->message(tr("Stress Testing"), tr("Wrong Answer"), "red");
     }
 }
 
