@@ -98,7 +98,7 @@ void StressTesting::start()
 
     pattern = "";
     argumentsCount = 0;
-    
+
     int leftBracketPos = -1;
     int currentPos = 0;
     bool ok = true;
