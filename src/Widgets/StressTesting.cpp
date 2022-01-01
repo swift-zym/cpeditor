@@ -312,11 +312,12 @@ void StressTesting::nextTest()
     }
 
     QString arguments;
-    bool ok=false;
-    do{
-        std::tie(ok,arguments) = generateArguments();
-    }while(!ok);
-    
+    bool ok = false;
+    do
+    {
+        std::tie(ok, arguments) = generateArguments();
+    } while (!ok);
+
     log->info(tr("Stress Testing"), tr("Running with arguments \"%1\"").arg(arguments));
 
     runFinishedCount = 0;
@@ -464,18 +465,18 @@ void StressTesting::onCheckFinished(TestCase::Verdict verdict)
     }
 }
 
-QPair<bool,QString> StressTesting::generateArguments()
+QPair<bool, QString> StressTesting::generateArguments()
 {
-    auto [current,index] = dfsStack.pop();
+    auto [current, index] = dfsStack.pop();
     if (index == argumentsRange.length())
     {
-        return qMakePair(true,current);
+        return qMakePair(true, current);
     }
     for (unsigned long long i = argumentsRange[index].first; i <= argumentsRange[index].second; i++)
     {
         dfsStack.push(qMakePair(current.arg(QString::number(i)), index + 1));
     }
-    return qMakePair(false,"");
+    return qMakePair(false, "");
 }
 
 } // namespace Widgets
