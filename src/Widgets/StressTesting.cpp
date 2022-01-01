@@ -39,7 +39,7 @@ namespace Widgets
 {
 StressTesting::StressTesting(QWidget *parent)
     : QMainWindow(parent), mainWindow(qobject_cast<MainWindow *>(parent)), compiledCount(0), runFinishedCount(0),
-      stopping(false)
+      argumentsCount(0), stopping(false)
 {
     log = mainWindow->getLogger();
 
@@ -312,10 +312,7 @@ void StressTesting::nextTest()
             currentValue[i]++;
             break;
         }
-        else
-        {
-            currentValue[i] = argumentsRange[i].first;
-        }
+        currentValue[i] = argumentsRange[i].first;
     }
 
     QString arguments = pattern;
