@@ -290,8 +290,7 @@ void StressTesting::stop()
     delete stdCompiler;
 
     argumentsRange.clear();
-    while (!dfsStack.empty())
-        dfsStack.pop();
+    dfsStack.clear();
 
     startButton->setDisabled(false);
     stopButton->setDisabled(true);
