@@ -479,7 +479,7 @@ QPair<bool, QString> StressTesting::generateArguments()
     {
         dfsStack.push(qMakePair(current.arg(QString::number(i)), index + 1));
     }
-    return qMakePair(false, "");
+    return qMakePair(false, QString());
 }
 
 } // namespace Widgets
