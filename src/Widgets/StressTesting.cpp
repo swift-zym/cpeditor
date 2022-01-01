@@ -161,8 +161,6 @@ void StressTesting::start()
 
     tmp = tmp;
 
-    dfsStack.push(qMakePair(pattern, 0));
-
     QString generatorCode = Util::readFile(generatorPath->getLineEdit()->text(), tr("Read Generator"), log);
     QString userCode = mainWindow->getEditor()->toPlainText();
     QString stdCode = Util::readFile(stdPath->getLineEdit()->text(), tr("Read Standard Program"), log);
