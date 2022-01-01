@@ -303,8 +303,18 @@ void StressTesting::stop()
 
 void StressTesting::nextTest()
 {
-    for (int i = 0; i < argumentsCount; i++)
+    if (currentValue.size() == 0)
+        return;
+
+    for (int i = 0; i <= argumentsCount; i++)
     {
+        if (i == argumentsCount)
+        {
+            stop();
+            log->info(tr("Stress Testing"), tr("All tests finished, no countertest found"));
+            return;
+        }
+
         if (currentValue[i] != argumentsRange[i].second)
         {
             currentValue[i]++;
