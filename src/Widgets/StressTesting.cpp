@@ -24,6 +24,7 @@
 #include "Settings/PathItem.hpp"
 #include "Util/FileUtil.hpp"
 #include "Widgets/TestCase.hpp"
+#include "Widgets/TestCases.hpp"
 #include "generated/SettingsHelper.hpp"
 #include "mainwindow.hpp"
 #include <QCheckBox>
@@ -487,7 +488,11 @@ void StressTesting::onCheckFinished(TestCase::Verdict verdict)
     else
     {
         log->message(tr("Stress Testing"), tr("Wrong Answer"), "red");
-        if (continueAfterCountertest->checkState())
+        if (addCountertest->checkState() == Qt::CheckState::Checked)
+        {
+            mainWindow->getTestCases()->addTestCase(in, stdOut);
+        }
+        if (continueAfterCountertest->checkState() == Qt::CheckState::Checked)
         {
             nextTest();
         }
