@@ -165,6 +165,7 @@ void Compiler::onProcessFinished(int exitCode, QProcess::ExitStatus e)
 void Compiler::onProcessErrorOccurred(QProcess::ProcessError error)
 {
     LOG_WARN(INFO_OF(error));
+    LOG_WARN(compileProcess->errorString());
     if (error == QProcess::FailedToStart)
     {
         emit compilationFailed(
